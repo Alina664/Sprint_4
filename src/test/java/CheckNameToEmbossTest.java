@@ -1,3 +1,6 @@
+import io.qameta.allure.Epic;
+import io.qameta.allure.Step;
+import io.qameta.allure.junit4.DisplayName;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.junit.runners.Parameterized;
@@ -5,6 +8,7 @@ import org.junit.runners.Parameterized;
 import static org.junit.Assert.assertEquals;
 
 @RunWith(Parameterized.class)
+@Epic("Проверка на валидацию имени")
 public class CheckNameToEmbossTest {
     private final String message;
     private final String name;
@@ -19,23 +23,39 @@ public class CheckNameToEmbossTest {
     @Parameterized.Parameters
     public static Object[][] getSumData() {
         return new Object[][]{
-                {"пробел в середине, длина 15", "Тимоти Шаламере", true},
-                {"без пробелов", "ТимотейШевроле", false},
-                {"без пробела, длина 2", "Ти", false},
-                {"пробел в середине, длина 3", "Т и", true},
-                {"длина 19 символов", "Тимотияц Шаламеревы", true},
-                {"длина 20 символов", "Тимотияц Шаламеревыы", false},
-                {"длина 23 символов", "Тимотияц Швыйаламеревыы", false},
-                {"пробел в начале", " ТимотиШаламере", false},
-                {"пробел в конце", "ТимотиШаламере ", false},
-                {"несколько пробелов", "Тимоти Шала мере", false},
+                {"Проверяем есть ли пробел в середине, с длиной 15", "Тимоти Шаламере", true},
+                {"Проверяем имя без пробелов", "ТимотейШевроле", false},
+                {"Проверяем имя с длиной 2 символа", "Ти", false},
+                {"Проверяем имя с длиной 3 символа", "Т и", true},
+                {"Проверяем имя с длиной 19 символов", "Тимотияц Шаламеревы", true},
+                {"Проверяем имя с длиной 20 символов", "Тимотияц Шаламеревыы", false},
+                {"Проверяем имя с длиной 23 символов", "Тимотияц Швыйаламеревыы", false},
+                {"Проверяем имя с пробелом в начале", " ТимотиШаламере", false},
+                {"Проверяем имя с пробелом в конце", "ТимотиШаламере ", false},
+                {"Проверяем имя с несколькими пробелами", "Тимоти Шала мере", false},
         };
     }
-    
+
+    @Step("Compare result")
+    public void compareExpectedAndActual(String message, boolean expected, boolean actual) {
+        assertEquals(message, expected, actual);
+    }
+
+    @Step("Create account")
+    public Account createAccount(String name) {
+        return new Account(name);
+    }
+
+    @Step("Get check name to emboss")
+    public boolean getCheckNameToEmboss(Account account) {
+        return account.checkNameToEmboss();
+    }
+
     @Test
+    @DisplayName("проверяем имя с разными параметрами")
     public void checkNameToEmboss() {
-            Account account = new Account(name);
-            boolean actual = account.checkNameToEmboss();
-            assertEquals(message, expected, actual);
+            Account account = createAccount(name);
+            boolean actual = getCheckNameToEmboss(account);
+            compareExpectedAndActual(message, expected, actual);
         }
 }
