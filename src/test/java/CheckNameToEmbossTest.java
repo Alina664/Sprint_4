@@ -20,7 +20,7 @@ public class CheckNameToEmbossTest {
         this.expected = expected;
     }
 
-    @Parameterized.Parameters
+    @Parameterized.Parameters(name = "Тестовые данные: {0} {1}")
     public static Object[][] getSumData() {
         return new Object[][]{
                 {"Проверяем есть ли пробел в середине, с длиной 15", "Тимоти Шаламере", true},
@@ -33,6 +33,8 @@ public class CheckNameToEmbossTest {
                 {"Проверяем имя с пробелом в начале", " ТимотиШаламере", false},
                 {"Проверяем имя с пробелом в конце", "ТимотиШаламере ", false},
                 {"Проверяем имя с несколькими пробелами", "Тимоти Шала мере", false},
+                {"Проверяем пустое имя", "", false},
+                {"Проверяем пустое имя", null, false},
         };
     }
 
